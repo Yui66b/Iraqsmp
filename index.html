@@ -1,23 +1,26 @@
 <!doctype html>
-<html lang="ar">
+<html lang="ar" style="background:#000; color:#f8fafc; height:100%;">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>سيرفر iraqsmp</title>
   <style>
-    body {
-      font-family: "Segoe UI", Tahoma, sans-serif;
+    html, body {
+      margin: 0;
+      padding: 0;
       background: #000;
       color: #f8fafc;
-      margin: 0;
+      min-height: 100%;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+    }
+    body {
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
       text-align: center;
     }
     .card {
-      background: rgba(30,30,30,0.8);
+      background: rgba(30,30,30,0.85);
       border-radius: 16px;
       padding: 30px;
       box-shadow: 0 8px 30px rgba(0,0,0,0.7);
@@ -50,24 +53,12 @@
     }
     .status-up { color: #4ade80; font-weight: bold; }
     .status-down { color: #f87171; font-weight: bold; }
-
-    /* تنسيق خاص للجوال */
     @media (max-width: 768px) {
-      .card {
-        padding: 20px;
-        font-size: 14px;
-      }
-      button {
-        width: 100%;
-      }
+      .card { padding: 20px; font-size: 14px; }
+      button { width: 100%; }
     }
-
-    /* تنسيق خاص للـ PC */
     @media (min-width: 769px) {
-      .card {
-        padding: 40px;
-        font-size: 16px;
-      }
+      .card { padding: 40px; font-size: 16px; }
     }
   </style>
 </head>
@@ -94,7 +85,7 @@
     const serverHost = "iraqsmp.hs.vc";
     const serverPort = "25570";
 
-    // رابط للانضمام التلقائي
+    // رابط الانضمام التلقائي
     const uri = "minecraft://?addExternalServer=" + 
                 encodeURIComponent(serverName + "|" + serverHost + ":" + serverPort);
 
@@ -105,11 +96,11 @@
       }, 1500);
     });
 
-    // جلب معلومات السيرفر من mcsrvstat.us
+    // جلب معلومات السيرفر من mcstatus.io (Bedrock)
     async function fetchServerInfo() {
       const infoBox = document.getElementById("serverInfo");
       try {
-        const res = await fetch(`https://api.mcsrvstat.us/bedrock/2/${serverHost}:${serverPort}`);
+        const res = await fetch(`https://api.mcstatus.io/v2/status/bedrock/${serverHost}:${serverPort}`);
         const data = await res.json();
 
         if (!data || !data.online) {
@@ -120,7 +111,7 @@
         infoBox.innerHTML = `
           ✅ الحالة: <span class="status-up">متصل</span><br>
           👥 اللاعبين: ${data.players?.online || 0} / ${data.players?.max || "?"}<br>
-          🌍 نسخة: ${data.version || "غير معروف"}<br>
+          🌍 النسخة: ${data.version?.name || "غير معروف"}<br>
         `;
       } catch (err) {
         infoBox.innerHTML = "⚠️ تعذّر جلب معلومات السيرفر.";

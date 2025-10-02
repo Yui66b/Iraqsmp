@@ -3,39 +3,43 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>انضم إلى سيرفر iraqsmp</title>
+  <title>سيرفر iraqsmp</title>
   <style>
     body {
       font-family: "Segoe UI", Tahoma, sans-serif;
-      background: url('https://i.ibb.co/9tYcPnQ/mc-bg.jpg') center/cover fixed;
-      margin: 0; padding: 0;
-      display: flex; align-items: center; justify-content: center;
+      background: #000;
+      color: #f8fafc;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
       min-height: 100vh;
+      text-align: center;
     }
     .card {
-      backdrop-filter: blur(12px);
-      background: rgba(20, 24, 28, 0.6);
+      background: rgba(30,30,30,0.8);
       border-radius: 16px;
       padding: 30px;
-      width: 450px;
-      text-align: center;
-      color: #f1f5f9;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.7);
+      width: 90%;
+      max-width: 480px;
     }
-    h1 { margin: 0 0 10px; font-size: 24px; color: #38bdf8; text-shadow: 0 0 6px #0ea5e9; }
-    p { margin: 0 0 18px; color: #cbd5e1; }
+    h1 {
+      color: #22d3ee;
+      margin-bottom: 10px;
+    }
     button {
       padding: 12px 18px;
-      border: none; border-radius: 10px;
+      border: none;
+      border-radius: 10px;
       background: linear-gradient(180deg,#22d3ee,#0891b2);
-      color: #fff; font-weight: bold; cursor: pointer;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
       transition: transform 0.2s;
     }
     button:hover { transform: scale(1.05); }
-    code {
-      background: rgba(255,255,255,0.1);
-      padding: 3px 6px; border-radius: 6px;
-    }
     .server-info {
       margin-top: 20px;
       font-size: 14px;
@@ -46,13 +50,32 @@
     }
     .status-up { color: #4ade80; font-weight: bold; }
     .status-down { color: #f87171; font-weight: bold; }
+
+    /* تنسيق خاص للجوال */
+    @media (max-width: 768px) {
+      .card {
+        padding: 20px;
+        font-size: 14px;
+      }
+      button {
+        width: 100%;
+      }
+    }
+
+    /* تنسيق خاص للـ PC */
+    @media (min-width: 769px) {
+      .card {
+        padding: 40px;
+        font-size: 16px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="card">
     <h1>سيرفر iraqsmp</h1>
-    <p>اضغط الزر للانضمام مباشرة عبر Minecraft Bedrock:</p>
-    <button id="joinBtn">انضم الآن</button>
+    <p>اضغط للانضمام مباشرة عبر Minecraft Bedrock:</p>
+    <button id="joinBtn">🎮 انضم الآن</button>
 
     <p style="margin-top:14px; font-size:13px;">
       أو أضف يدويًا: <br>
@@ -67,27 +90,26 @@
   </div>
 
   <script>
-    // بيانات السيرفر
     const serverName = "iraqsmp";
     const serverHost = "iraqsmp.hs.vc";
     const serverPort = "25570";
 
-    // URI للانضمام التلقائي
+    // رابط للانضمام التلقائي
     const uri = "minecraft://?addExternalServer=" + 
                 encodeURIComponent(serverName + "|" + serverHost + ":" + serverPort);
 
     document.getElementById("joinBtn").addEventListener("click", () => {
       window.location.href = uri;
       setTimeout(() => {
-        alert("إذا لم يُفتح Minecraft تلقائيًا، ادخل وأضف السيرفر يدويًا من القائمة.");
+        alert("إذا لم يُفتح Minecraft تلقائيًا، ادخل وأضف السيرفر يدويًا.");
       }, 1500);
     });
 
-    // جلب معلومات السيرفر من API خارجي
+    // جلب معلومات السيرفر من mcsrvstat.us
     async function fetchServerInfo() {
       const infoBox = document.getElementById("serverInfo");
       try {
-        const res = await fetch(`https://api.mcstatus.io/v2/status/bedrock/${serverHost}:${serverPort}`);
+        const res = await fetch(`https://api.mcsrvstat.us/bedrock/2/${serverHost}:${serverPort}`);
         const data = await res.json();
 
         if (!data || !data.online) {
@@ -97,8 +119,8 @@
 
         infoBox.innerHTML = `
           ✅ الحالة: <span class="status-up">متصل</span><br>
-          👥 اللاعبين: ${data.players.online} / ${data.players.max}<br>
-          🌍 نسخة: ${data.version.name}<br>
+          👥 اللاعبين: ${data.players?.online || 0} / ${data.players?.max || "?"}<br>
+          🌍 نسخة: ${data.version || "غير معروف"}<br>
         `;
       } catch (err) {
         infoBox.innerHTML = "⚠️ تعذّر جلب معلومات السيرفر.";
